@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
-        /* 2. CSS 스타일: 이미지 영역 추가 및 레이아웃 개선 */
+        /* 2. UI/UX 스타일 최적화 (브랜드 및 사이즈 레이아웃 추가) */
         body { 
             font-family: 'Pretendard', -apple-system, sans-serif; 
             text-align: center; 
@@ -42,7 +42,6 @@
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        /* --- 이미지 스타일 추가 --- */
         .product-img-container {
             width: 100%;
             height: 250px;
@@ -57,13 +56,38 @@
         .product-img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 이미지가 비율에 맞게 꽉 차도록 설정 */
+            object-fit: cover;
         }
-        /* ------------------------ */
+        /* --- 브랜드 스타일에 대한 전용 디자인 --- */
+        .item-brand { 
+            font-size: 14px; 
+            font-weight: 700; 
+            color: #86868b; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
         .item-title { font-size: 24px; font-weight: bold; color: #1d1d1f; margin-bottom: 8px; }
         .item-price { color: #0071e3; font-size: 20px; font-weight: 600; margin-bottom: 15px; }
         .info-label { color: #86868b; font-size: 14px; margin-top: 10px; }
         .info-value { color: #1d1d1f; font-size: 16px; margin-bottom: 10px; font-weight: 500; }
+        
+        /* --- 사이즈 칩(Chip) 형태의 디자인 추가 --- */
+        .size-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        .size-chip {
+            padding: 6px 14px;
+            background-color: #f5f5f7;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1d1d1f;
+            border: 1px solid #d2d2d7;
+        }
         hr { border: 0; border-top: 1px solid #eee; margin: 15px 0; }
     </style>
 </head>
@@ -77,9 +101,14 @@
             <img id="res-img" class="product-img" src="" alt="상품 이미지">
         </div>
         
+        <div id="res-brand" class="item-brand"></div>
         <div id="res-name" class="item-title"></div>
         <div id="res-price" class="item-price"></div>
         <hr>
+        
+        <div class="info-label">선택 가능 사이즈 (Size)</div>
+        <div id="res-size" class="size-container"></div>
+        
         <div class="info-label">소재 정보</div>
         <div id="res-material" class="info-value"></div>
         <div class="info-label">세탁 및 취급 주의사항</div>
@@ -87,48 +116,68 @@
     </div>
 
     <script>
-        // 3. 자바스크립트: 이미지 경로(img) 데이터 추가
+        // 3. 데이터베이스 모사 객체 (브랜드(brand) 및 사이즈(sizes) 데이터 추가)
         const mockDatabase = {
             "SP001": { 
+                brand: "EcoWear Labs",
                 name: "오버사이즈 코튼 티셔츠", 
                 price: "29,000 KRW", 
+                sizes: ["M", "L", "XL"],
                 material: "100% 면 (Cotton)", 
                 care: "30도 이하 미온수 세탁, 건조기 금지",
-                img: "SP001.jpg" // 이미지 파일명 지정을 위한 매칭
+                img: "SP001.jpg"
             },
             "SP002": { 
+                brand: "Urban Denim Co.",
                 name: "슬림핏 데님 팬츠", 
                 price: "45,000 KRW", 
+                sizes: ["28", "30", "32", "34"],
                 material: "데님 (Denim)", 
                 care: "단독 세탁 권장, 그늘에서 건조",
                 img: "SP002.jpg"
             },
             "SP003": { 
+                brand: "Knit Studio",
                 name: "울 혼방 가디건", 
                 price: "85,000 KRW", 
+                sizes: ["S", "M", "L"],
                 material: "울 80%, 나일론 20%", 
                 care: "드라이클리닝 전문점 이용 권장",
                 img: "SP003.jpg"
             }
         };
 
+        // 4. QR 코드 스캔 성공 시 데이터 매칭 처리 함수
         function onScanSuccess(decodedText) {
             const data = mockDatabase[decodedText];
             
             if (data) {
                 document.getElementById('result-box').style.display = 'block';
-                document.getElementById('res-img').src = data.img; // 이미지 경로 실시간 바인딩
+                document.getElementById('res-img').src = data.img;
+                document.getElementById('res-brand').innerText = data.brand; // 브랜드 매pping
                 document.getElementById('res-name').innerText = data.name;
                 document.getElementById('res-price').innerText = data.price;
                 document.getElementById('res-material').innerText = data.material;
                 document.getElementById('res-care').innerText = data.care;
                 
+                // 사이즈 배열 데이터를 칩(Chip) 형태로 동적 생성
+                const sizeContainer = document.getElementById('res-size');
+                sizeContainer.innerHTML = ""; // 기존 아이템 초기화
+                data.sizes.forEach(size => {
+                    const chip = document.createElement('span');
+                    chip.className = 'size-chip';
+                    chip.innerText = size;
+                    sizeContainer.appendChild(chip);
+                });
+                
+                // 모바일 디바이스 진동 피드백
                 if (navigator.vibrate) navigator.vibrate(100);
             } else {
-                console.log("알 수 없는 상품 ID입니다: " + decodedText);
+                alert("등록되지 않은 상품 ID입니다.");
             }
         }
 
+        // 5. 스캐너 모듈 초기화 및 실시간 구동
         let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
             fps: 10, 
             qrbox: { width: 250, height: 250 } 
@@ -136,4 +185,4 @@
         html5QrcodeScanner.render(onScanSuccess);
     </script>
 </body>
-</html>`
+</html>
