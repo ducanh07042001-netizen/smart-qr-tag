@@ -22,6 +22,7 @@
             margin-left: auto; 
             margin-right: auto;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none; /* 초기에는 숨김 처리 */
         }
         .product-img-container {
             width: 100%;
@@ -68,25 +69,54 @@
     <div id="error-message">올바르지 않은 상품 태그 접근입니다.</div>
 
     <script>
+        // 🌟 [제품 등록 구역] mockDatabase에 업그레이드된 아디다스 상품 데이터 등록
         const mockDatabase = {
-            "SP001": { brand: "ADIDAS", name: "오버사이즈 코튼 티셔츠", price: "29,000 KRW", sizes: ["M", "L", "XL"], material: "100% 면 (Cotton)", care: "30도 이하 미온수 세탁, 건조기 금지", img: "SP001.jpg" },
-            "SP002": { brand: "ADIDAS ORIGINALS", name: "슬림핏 데님 팬츠", price: "45,000 KRW", sizes: ["28", "30", "32"], material: "데님 (Denim)", care: "단독 세탁 권장, 그늘에서 건조", img: "SP002.jpg" },
-            "SP003": { brand: "ADIDAS PERFORMANCE", name: "울 혼방 가디건", price: "85,000 KRW", sizes: ["S", "M", "L"], material: "울 80%, 나일론 20%", care: "드라이클리닝 전문점 이용 권장", img: "SP003.jpg" }
+            "SP001": { 
+                brand: "ADIDAS", 
+                name: "오버사이즈 코튼 티셔츠", 
+                price: "29,000 KRW", 
+                sizes: ["M", "L", "XL"], 
+                material: "100% 면 (Cotton)", 
+                care: "30도 이하 미온수 세탁, 건조기 금지", 
+                img: "SP001.jpg" 
+            },
+            "SP002": { 
+                brand: "ADIDAS ORIGINALS", 
+                name: "슬림핏 데님 팬츠", 
+                price: "45,000 KRW", 
+                sizes: ["30", "32", "34"], 
+                material: "데님 (Denim)", 
+                care: "단독 세탁 권장, 그늘에서 건조", 
+                img: "SP002.jpg" 
+            },
+            "SP003": { 
+                brand: "ADIDAS PERFORMANCE", 
+                name: "울 혼방 가디건", 
+                price: "85,000 KRW", 
+                sizes: ["S", "M", "L"], 
+                material: "울 80%, 나일론 20%", 
+                care: "드라이클리닝 전문점 이용 권장", 
+                img: "SP003.jpg" 
+            }
         };
 
-        // 🌟 [핵심 로직] URL의 쿼리 스트링(?id=SP001)에서 상품 ID를 자동으로 추출하는 함수
+        // URL의 쿼리 스트링(?id=SP001)에서 상품 ID를 자동으로 추출하는 함수
         function getProductIdFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id'); // 'id' 파라미터 값 반환
+            return urlParams.get('id');
         }
 
-        // 페이지 로드 시 즉시 실행
+        // 페이지 로드 시 즉시 실행되어 데이터를 UI에 바인딩
         window.onload = function() {
             const productId = getProductIdFromURL();
             const data = mockDatabase[productId];
             
             if (data) {
-                // 데이터를 UI에 매핑
+                // 데이터를 찾은 경우 에러 메시지를 숨기고 결과 박스를 노출
+                document.getElementById('result-box').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                
+                // 각 HTML 요소에 데이터 매핑
                 document.getElementById('res-img').src = data.img;
                 document.getElementById('res-brand').innerText = data.brand;
                 document.getElementById('res-name').innerText = data.name;
@@ -94,7 +124,9 @@
                 document.getElementById('res-material').innerText = data.material;
                 document.getElementById('res-care').innerText = data.care;
                 
+                // 사이즈 배열 데이터를 동적으로 Chip 생성
                 const sizeContainer = document.getElementById('res-size');
+                sizeContainer.innerHTML = ""; // 초기화
                 data.sizes.forEach(size => {
                     const chip = document.createElement('span');
                     chip.className = 'size-chip';
@@ -102,7 +134,7 @@
                     sizeContainer.appendChild(chip);
                 });
             } else {
-                // ID가 없거나 잘못된 경우 에러 메시지 출력
+                // 데이터가 없는 경우 결과 박스를 숨기고 에러 메시지 노출
                 document.getElementById('result-box').style.display = 'none';
                 document.getElementById('error-message').style.display = 'block';
             }
