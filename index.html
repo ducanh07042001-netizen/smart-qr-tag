@@ -41,32 +41,75 @@
             letter-spacing: 1px;
             margin-top: 2px;
         }
-        .product-img-container {
+        
+        /* 🌟 KHUNG CHỨA CAROUSEL TRƯỢT ẢNH NGANG */
+        .product-img-slider-container {
             width: 100%;
-            height: 240px;
+            height: 280px;
             border-radius: 16px;
             overflow: hidden;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             background-color: #f5f5f7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
         }
-        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .product-img-carousel {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory; /* Tự động hít ảnh vào giữa khung khi vuốt */
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* Giúp vuốt mượt mà trên iOS */
+        }
+        
+        /* Ẩn thanh cuộn của trình duyệt */
+        .product-img-carousel::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .product-img-carousel img {
+            width: 100%;
+            height: 100%;
+            flex: 0 0 100%; /* Mỗi ảnh chiếm trọn 100% chiều rộng */
+            scroll-snap-align: center;
+            object-fit: cover;
+        }
+
+        /* Hệ thống dấu chấm chỉ báo (Dots Indicator) */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: #d2d2d7;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            background-color: #0071e3; /* Chấm màu xanh khi ảnh đang hiển thị */
+            width: 14px;
+            border-radius: 3px;
+        }
+
         .item-title { font-size: 22px; font-weight: 800; color: #1d1d1f; text-align: center; margin-bottom: 6px; }
         .item-price { color: #0071e3; font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; }
         
         .info-label { color: #1d1d1f; font-size: 15px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; }
         .info-value { color: #515154; font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
         
-        /* 사이즈 칩 디자인 */
+        /* Size Chips */
         .size-container { display: flex; gap: 8px; margin-bottom: 15px; }
         .size-chip { padding: 6px 14px; background-color: #f5f5f7; border-radius: 10px; font-size: 13px; font-weight: 600; color: #1d1d1f; border: 1px solid #e2e2e7; }
         
-        /* 🛠️ [수정 구간] 케어 기호 그리드 레이아웃 최적화 (모바일 핏) */
+        /* Care Icons Grid */
         .care-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* 무조건 5열 배치 */
+            grid-template-columns: repeat(5, 1fr);
             gap: 4px;
             margin-top: 15px;
             margin-bottom: 15px;
@@ -80,17 +123,17 @@
             justify-content: flex-start;
         }
         .care-icon {
-            width: 36px;  /* 44px에서 36px로 최적화하여 여백 확보 */
+            width: 36px;  
             height: 36px;
             margin-bottom: 8px;
         }
         .care-text {
-            font-size: 9.5px; /* 글씨 크기 소폭 조정 */
+            font-size: 9.5px;
             color: #86868b;
             font-weight: 500;
             line-height: 1.3;
-            word-break: keep-all; /* 한글 단어 단위 끊김 방지 */
-            white-space: normal;  /* 자동 줄바꿈 허용으로 레이아웃 붕괴 방지 */
+            word-break: keep-all;
+            white-space: normal;
         }
         
         .footer-notice {
@@ -116,9 +159,11 @@
             <div class="brand-sub">SMART CARE TAG</div>
         </div>
         
-        <div class="product-img-container">
-            <img id="res-img" class="product-img" src="" alt="상품 이미지">
+        <div class="product-img-slider-container">
+            <div id="res-img-carousel" class="product-img-carousel"></div>
         </div>
+        
+        <div id="res-carousel-dots" class="carousel-dots"></div>
         
         <div id="res-name" class="item-title"></div>
         <div id="res-price" class="item-price"></div>
@@ -132,7 +177,6 @@
         <div id="res-material" class="info-value"></div>
         
         <div class="info-label">세탁 및 취급 주의사항</div>
-        
         <div id="res-care-icons" class="care-grid"></div>
         
         <div class="footer-notice">
@@ -143,7 +187,7 @@
     <div id="error-message">올바르지 않은 상품 태그 접근입니다.</div>
 
     <script>
-        // 고해상도 SVG 벡터 그래픽 데이터
+        // Ký hiệu giặt là chuẩn SVG vector
         const iconSVG = {
             dry_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><circle cx="50" cy="50" r="35"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
             bleach_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><polygon points="50,15 15,80 85,80"/><line x1="25" y1="30" x2="75" y2="80"/><line x1="75" y1="30" x2="25" y2="80"/></svg>`,
@@ -152,14 +196,19 @@
             iron_low: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M20,75 L80,75 C80,75 85,50 70,50 L40,50 C30,50 20,60 20,75 Z M35,50 L35,30 L65,30"/><circle cx="50" cy="63" r="3" fill="black"/></svg>`
         };
 
+        // 🌟 DATABASE CHỨA MẢNG LINK ẢNH THẬT TRỰC TUYẾN (Dùng được ngay lập tức)
         const mockDatabase = {
             "SP001": { 
                 brand: "ADIDAS", 
                 name: "오버사이즈 코튼 티셔츠", 
                 price: "29,000 KRW", 
                 sizes: ["M", "L", "XL"], 
-                material: "소재: 100% 코튼(Cotton) - 프리미엄 품질", 
-                img: "SP001.jpg",
+                material: "소재: 100% 코튼(Cotton) - 프리미엄 에코 원사", 
+                imgs: [
+                    "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80", // Mặt trước áo thun đen
+                    "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500&q=80", // Form áo mặc lên người
+                    "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=500&q=80"  // Cận cảnh gấp xếp vải
+                ],
                 careIcons: [
                     {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
                     {svg: iconSVG.bleach_no, text: "표백 금지"},
@@ -174,7 +223,10 @@
                 price: "45,000 KRW", 
                 sizes: ["30", "32", "34"], 
                 material: "소재: 프리미엄 인디고 데님 (친환경 공정)", 
-                img: "SP002.jpg",
+                imgs: [
+                    "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80", // Ảnh quần denim
+                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&q=80"  // Chi tiết đường may quần
+                ],
                 careIcons: [
                     {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
                     {svg: iconSVG.bleach_no, text: "표백 금지"},
@@ -189,7 +241,10 @@
                 price: "85,000 KRW", 
                 sizes: ["S", "M", "L"], 
                 material: "소재: 천연 울 80%, 고기능성 나일론 20%", 
-                img: "SP003.jpg",
+                imgs: [
+                    "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?w=500&q=80", // Thớ len dệt cao cấp
+                    "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&q=80"  // Form áo ấm áp
+                ],
                 careIcons: [
                     {svg: iconSVG.dry_no, text: "드라이 전용"},
                     {svg: iconSVG.bleach_no, text: "표백 금지"},
@@ -213,12 +268,48 @@
                 document.getElementById('result-box').style.display = 'block';
                 document.getElementById('error-message').style.display = 'none';
                 
-                document.getElementById('res-img').src = data.img;
                 document.getElementById('res-brand').innerText = data.brand;
                 document.getElementById('res-name').innerText = data.name;
                 document.getElementById('res-price').innerText = data.price;
                 document.getElementById('res-material').innerText = data.material;
                 
+                // 🌟 LOGIC SINH CAROUSEL VÀ DOTS CHỈ BÁO ĐỘNG
+                const carouselContainer = document.getElementById('res-img-carousel');
+                const dotsContainer = document.getElementById('res-carousel-dots');
+                
+                carouselContainer.innerHTML = ""; 
+                dotsContainer.innerHTML = "";    
+                
+                data.imgs.forEach((imgUrl, index) => {
+                    // Thêm phần tử ảnh vào thanh cuộn ngang
+                    const imgTag = document.createElement('img');
+                    imgTag.src = imgUrl;
+                    imgTag.alt = `${data.name} Image ${index + 1}`;
+                    carouselContainer.appendChild(imgTag);
+                    
+                    // Thêm dấu chấm tương ứng
+                    const dotTag = document.createElement('span');
+                    dotTag.className = index === 0 ? 'dot active' : 'dot';
+                    dotsContainer.appendChild(dotTag);
+                });
+
+                // Lắng nghe sự kiện trượt để đổi màu dấu chấm
+                carouselContainer.addEventListener('scroll', () => {
+                    const width = carouselContainer.clientWidth;
+                    const scrollLeft = carouselContainer.scrollLeft;
+                    const activeIndex = Math.round(scrollLeft / width);
+                    
+                    const dots = dotsContainer.querySelectorAll('.dot');
+                    dots.forEach((dot, idx) => {
+                        if (idx === activeIndex) {
+                            dot.classList.add('active');
+                        } else {
+                            dot.classList.remove('active');
+                        }
+                    });
+                });
+                
+                // Render kích cỡ (Size)
                 const sizeContainer = document.getElementById('res-size');
                 sizeContainer.innerHTML = "";
                 data.sizes.forEach(size => {
@@ -228,6 +319,7 @@
                     sizeContainer.appendChild(chip);
                 });
 
+                // Render ký hiệu giặt là công nghệ SVG
                 const careContainer = document.getElementById('res-care-icons');
                 careContainer.innerHTML = "";
                 data.careIcons.forEach(item => {
