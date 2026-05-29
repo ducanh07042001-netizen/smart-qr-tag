@@ -63,30 +63,34 @@
         .size-container { display: flex; gap: 8px; margin-bottom: 15px; }
         .size-chip { padding: 6px 14px; background-color: #f5f5f7; border-radius: 10px; font-size: 13px; font-weight: 600; color: #1d1d1f; border: 1px solid #e2e2e7; }
         
-        /* 🌟 케어 기호(Care Icons) 그리드 레이아웃 스타일 */
+        /* 🛠️ [수정 구간] 케어 기호 그리드 레이아웃 최적화 (모바일 핏) */
         .care-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
+            grid-template-columns: repeat(5, 1fr); /* 무조건 5열 배치 */
+            gap: 4px;
             margin-top: 15px;
             margin-bottom: 15px;
             text-align: center;
+            width: 100%;
         }
         .care-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
         }
         .care-icon {
-            width: 44px;
-            height: 44px;
-            margin-bottom: 6px;
+            width: 36px;  /* 44px에서 36px로 최적화하여 여백 확보 */
+            height: 36px;
+            margin-bottom: 8px;
         }
         .care-text {
-            font-size: 10px;
+            font-size: 9.5px; /* 글씨 크기 소폭 조정 */
             color: #86868b;
             font-weight: 500;
-            white-space: nowrap;
+            line-height: 1.3;
+            word-break: keep-all; /* 한글 단어 단위 끊김 방지 */
+            white-space: normal;  /* 자동 줄바꿈 허용으로 레이아웃 붕괴 방지 */
         }
         
         .footer-notice {
@@ -139,16 +143,15 @@
     <div id="error-message">올바르지 않은 상품 태그 접근입니다.</div>
 
     <script>
-        // 🌟 SVG 그래픽 기호 데이터베이스 (화질 저하 없는 벡터 아이콘)
+        // 고해상도 SVG 벡터 그래픽 데이터
         const iconSVG = {
-            dry_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="5.5"><circle cx="50" cy="50" r="35"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
-            bleach_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="5.5"><polygon points="50,15 15,80 85,80"/><line x1="25" y1="30" x2="75" y2="80"/><line x1="75" y1="30" x2="25" y2="80"/></svg>`,
-            wash_cold: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="5.5"><path d="M15,40 C15,40 25,35 35,40 C45,45 55,40 55,40 C55,40 65,35 75,40 C85,45 90,40 90,40 L80,80 L20,80 Z"/><path d="M30,55 Q50,45 70,55" stroke-width="4"/></svg>`,
-            dry_no_machine: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="5.5"><rect x="15" y="15" width="70" height="70" rx="10"/><circle cx="50" cy="50" r="22"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
-            iron_low: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="5.5"><path d="M20,75 L80,75 C80,75 85,50 70,50 L40,50 C30,50 20,60 20,75 Z M35,50 L35,30 L65,30"/><circle cx="50" cy="63" r="3" fill="black"/></svg>`
+            dry_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><circle cx="50" cy="50" r="35"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
+            bleach_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><polygon points="50,15 15,80 85,80"/><line x1="25" y1="30" x2="75" y2="80"/><line x1="75" y1="30" x2="25" y2="80"/></svg>`,
+            wash_cold: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M15,40 C15,40 25,35 35,40 C45,45 55,40 55,40 C55,40 65,35 75,40 C85,45 90,40 90,40 L80,80 L20,80 Z"/><path d="M30,55 Q50,45 70,55" stroke-width="4"/></svg>`,
+            dry_no_machine: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><rect x="15" y="15" width="70" height="70" rx="10"/><circle cx="50" cy="50" r="22"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
+            iron_low: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M20,75 L80,75 C80,75 85,50 70,50 L40,50 C30,50 20,60 20,75 Z M35,50 L35,30 L65,30"/><circle cx="50" cy="63" r="3" fill="black"/></svg>`
         };
 
-        // 🌟 고도화된 제품 정보 등록 (상세 소재와 케어 기호 매핑 매칭)
         const mockDatabase = {
             "SP001": { 
                 brand: "ADIDAS", 
@@ -158,11 +161,11 @@
                 material: "소재: 100% 코튼(Cotton) - 프리미엄 품질", 
                 img: "SP001.jpg",
                 careIcons: [
-                    {svg: iconSVG.dry_no, text: "드라이클리닝 금지"},
+                    {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
                     {svg: iconSVG.bleach_no, text: "표백 금지"},
-                    {svg: iconSVG.wash_cold, text: "찬물 세탁 권장"},
-                    {svg: iconSVG.dry_no_machine, text: "저온 건조 금지"},
-                    {svg: iconSVG.iron_low, text: "저온 다림질 가능"}
+                    {svg: iconSVG.wash_cold, text: "찬물 세탁<br>권장"},
+                    {svg: iconSVG.dry_no_machine, text: "저온 건조<br>금지"},
+                    {svg: iconSVG.iron_low, text: "저온 다림질<br>가능"}
                 ]
             },
             "SP002": { 
@@ -170,14 +173,14 @@
                 name: "슬림핏 데님 팬츠", 
                 price: "45,000 KRW", 
                 sizes: ["30", "32", "34"], 
-                material: "소재: 프리미엄 인디고 데님 (친환경 워싱 공정)", 
+                material: "소재: 프리미엄 인디고 데님 (친환경 공정)", 
                 img: "SP002.jpg",
                 careIcons: [
-                    {svg: iconSVG.dry_no, text: "드라이클리닝 금지"},
+                    {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
                     {svg: iconSVG.bleach_no, text: "표백 금지"},
-                    {svg: iconSVG.wash_cold, text: "단독 찬물 세탁"},
-                    {svg: iconSVG.dry_no_machine, text: "기계 건조 금지"},
-                    {svg: iconSVG.iron_low, text: "중온 다림질 가능"}
+                    {svg: iconSVG.wash_cold, text: "단독 찬물<br>세탁"},
+                    {svg: iconSVG.dry_no_machine, text: "기계 건조<br>금지"},
+                    {svg: iconSVG.iron_low, text: "중온 다림질<br>가능"}
                 ]
             },
             "SP003": { 
@@ -192,7 +195,7 @@
                     {svg: iconSVG.bleach_no, text: "표백 금지"},
                     {svg: iconSVG.wash_cold, text: "손세탁 권장"},
                     {svg: iconSVG.dry_no_machine, text: "건조기 금지"},
-                    {svg: iconSVG.iron_low, text: "다림질 천 사용"}
+                    {svg: iconSVG.iron_low, text: "다림질 천<br>사용"}
                 ]
             }
         };
@@ -216,7 +219,6 @@
                 document.getElementById('res-price').innerText = data.price;
                 document.getElementById('res-material').innerText = data.material;
                 
-                // 사이즈 렌더링
                 const sizeContainer = document.getElementById('res-size');
                 sizeContainer.innerHTML = "";
                 data.sizes.forEach(size => {
@@ -226,7 +228,6 @@
                     sizeContainer.appendChild(chip);
                 });
 
-                // 🌟 [핵심 로직] 케어 아이콘 그리드를 동적으로 생성하는 구문
                 const careContainer = document.getElementById('res-care-icons');
                 careContainer.innerHTML = "";
                 data.careIcons.forEach(item => {
