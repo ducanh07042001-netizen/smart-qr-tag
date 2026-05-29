@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스마트 의류 정보 시스템 (Smart Clothing System)</title>
-    
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    
+    <title>아디다스 스마트 제품 정보 (Adidas Smart Information)</title>
     <style>
-        /* 2. UI/UX 스타일 최적화 (브랜드 및 사이즈 레이아웃 추가) */
         body { 
             font-family: 'Pretendard', -apple-system, sans-serif; 
             text-align: center; 
@@ -16,31 +12,16 @@
             margin: 0; 
             padding: 20px; 
         }
-        #reader { 
-            width: 100%; 
-            max-width: 400px; 
-            margin: auto; 
-            border-radius: 20px; 
-            overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-            background: white;
-        }
         #result-box { 
-            margin-top: 25px; 
+            margin-top: 10px; 
             padding: 25px; 
             background: white; 
-            display: none; 
             border-radius: 20px; 
             text-align: left;
             max-width: 360px; 
             margin-left: auto; 
             margin-right: auto;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            animation: slideUp 0.5s ease-out;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
         .product-img-container {
             width: 100%;
@@ -53,136 +34,79 @@
             align-items: center;
             justify-content: center;
         }
-        .product-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        /* --- 브랜드 스타일에 대한 전용 디자인 --- */
-        .item-brand { 
-            font-size: 14px; 
-            font-weight: 700; 
-            color: #86868b; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .item-brand { font-size: 14px; font-weight: 700; color: #86868b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
         .item-title { font-size: 24px; font-weight: bold; color: #1d1d1f; margin-bottom: 8px; }
         .item-price { color: #0071e3; font-size: 20px; font-weight: 600; margin-bottom: 15px; }
         .info-label { color: #86868b; font-size: 14px; margin-top: 10px; }
         .info-value { color: #1d1d1f; font-size: 16px; margin-bottom: 10px; font-weight: 500; }
-        
-        /* --- 사이즈 칩(Chip) 형태의 디자인 추가 --- */
-        .size-container {
-            display: flex;
-            gap: 8px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-        }
-        .size-chip {
-            padding: 6px 14px;
-            background-color: #f5f5f7;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
-        }
+        .size-container { display: flex; gap: 8px; margin-top: 5px; margin-bottom: 10px; }
+        .size-chip { padding: 6px 14px; background-color: #f5f5f7; border-radius: 8px; font-size: 14px; font-weight: 600; color: #1d1d1f; border: 1px solid #d2d2d7; }
         hr { border: 0; border-top: 1px solid #eee; margin: 15px 0; }
+        #error-message { color: #d9534f; font-weight: bold; margin-top: 50px; display: none; }
     </style>
 </head>
 <body>
-    <h2 style="margin-bottom: 30px;">의류 태그 스캔 시스템</h2>
-    
-    <div id="reader"></div>
+    <h2 style="margin-bottom: 20px;">ADIDAS 모바일 제품 가이드</h2>
     
     <div id="result-box">
         <div class="product-img-container">
             <img id="res-img" class="product-img" src="" alt="상품 이미지">
         </div>
-        
         <div id="res-brand" class="item-brand"></div>
         <div id="res-name" class="item-title"></div>
         <div id="res-price" class="item-price"></div>
         <hr>
-        
         <div class="info-label">선택 가능 사이즈 (Size)</div>
         <div id="res-size" class="size-container"></div>
-        
         <div class="info-label">소재 정보</div>
         <div id="res-material" class="info-value"></div>
         <div class="info-label">세탁 및 취급 주의사항</div>
         <div id="res-care" class="info-value" style="color: #d9534f;"></div>
     </div>
 
+    <div id="error-message">올바르지 않은 상품 태그 접근입니다.</div>
+
     <script>
-        // 3. 데이터베이스 모사 객체 (브랜드(brand) 및 사이즈(sizes) 데이터 추가)
         const mockDatabase = {
-            "SP001": { 
-                brand: "ADIDAS",
-                name: "오버사이즈 코튼 티셔츠", 
-                price: "29,000 KRW", 
-                sizes: ["M"],
-                material: "100% 면 (Cotton)", 
-                care: "30도 이하 미온수 세탁, 건조기 금지",
-                img: "SP001.jpg"
-            },
-            "SP002": { 
-                brand: "H&M",
-                name: "슬림핏 데님 팬츠", 
-                price: "45,000 KRW", 
-                sizes: ["30"],
-                material: "데님 (Denim)", 
-                care: "단독 세탁 권장, 그늘에서 건조",
-                img: "SP002.jpg"
-            },
-            "SP003": { 
-                brand: "CANIFA",
-                name: "울 혼방 가디건", 
-                price: "85,000 KRW", 
-                sizes: [ "M"],
-                material: "울 80%, 나일론 20%", 
-                care: "드라이클리닝 전문점 이용 권장",
-                img: "SP003.jpg"
-            }
+            "SP001": { brand: "ADIDAS", name: "오버사이즈 코튼 티셔츠", price: "29,000 KRW", sizes: ["M", "L", "XL"], material: "100% 면 (Cotton)", care: "30도 이하 미온수 세탁, 건조기 금지", img: "SP001.jpg" },
+            "SP002": { brand: "ADIDAS ORIGINALS", name: "슬림핏 데님 팬츠", price: "45,000 KRW", sizes: ["28", "30", "32"], material: "데님 (Denim)", care: "단독 세탁 권장, 그늘에서 건조", img: "SP002.jpg" },
+            "SP003": { brand: "ADIDAS PERFORMANCE", name: "울 혼방 가디건", price: "85,000 KRW", sizes: ["S", "M", "L"], material: "울 80%, 나일론 20%", care: "드라이클리닝 전문점 이용 권장", img: "SP003.jpg" }
         };
 
-        // 4. QR 코드 스캔 성공 시 데이터 매칭 처리 함수
-        function onScanSuccess(decodedText) {
-            const data = mockDatabase[decodedText];
+        // 🌟 [핵심 로직] URL의 쿼리 스트링(?id=SP001)에서 상품 ID를 자동으로 추출하는 함수
+        function getProductIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id'); // 'id' 파라미터 값 반환
+        }
+
+        // 페이지 로드 시 즉시 실행
+        window.onload = function() {
+            const productId = getProductIdFromURL();
+            const data = mockDatabase[productId];
             
             if (data) {
-                document.getElementById('result-box').style.display = 'block';
+                // 데이터를 UI에 매핑
                 document.getElementById('res-img').src = data.img;
-                document.getElementById('res-brand').innerText = data.brand; // 브랜드 매pping
+                document.getElementById('res-brand').innerText = data.brand;
                 document.getElementById('res-name').innerText = data.name;
                 document.getElementById('res-price').innerText = data.price;
                 document.getElementById('res-material').innerText = data.material;
                 document.getElementById('res-care').innerText = data.care;
                 
-                // 사이즈 배열 데이터를 칩(Chip) 형태로 동적 생성
                 const sizeContainer = document.getElementById('res-size');
-                sizeContainer.innerHTML = ""; // 기존 아이템 초기화
                 data.sizes.forEach(size => {
                     const chip = document.createElement('span');
                     chip.className = 'size-chip';
                     chip.innerText = size;
                     sizeContainer.appendChild(chip);
                 });
-                
-                // 모바일 디바이스 진동 피드백
-                if (navigator.vibrate) navigator.vibrate(100);
             } else {
-                alert("등록되지 않은 상품 ID입니다.");
+                // ID가 없거나 잘못된 경우 에러 메시지 출력
+                document.getElementById('result-box').style.display = 'none';
+                document.getElementById('error-message').style.display = 'block';
             }
-        }
-
-        // 5. 스캐너 모듈 초기화 및 실시간 구동
-        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
-            fps: 10, 
-            qrbox: { width: 250, height: 250 } 
-        });
-        html5QrcodeScanner.render(onScanSuccess);
+        };
     </script>
 </body>
 </html>
