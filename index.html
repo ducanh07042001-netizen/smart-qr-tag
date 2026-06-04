@@ -42,7 +42,7 @@
             margin-top: 2px;
         }
         
-        /* 🌟 KHUNG CHỨA CAROUSEL TRƯỢT ẢNH NGANG */
+        /* 🌟 가로 이미지 슬라이더(캐러셀) 컨테이너 */
         .product-img-slider-container {
             width: 100%;
             height: 280px;
@@ -58,12 +58,12 @@
             width: 100%;
             height: 100%;
             overflow-x: auto;
-            scroll-snap-type: x mandatory; /* Tự động hít ảnh vào giữa khung khi vuốt */
+            scroll-snap-type: x mandatory; /* 스와이프 시 이미지가 프레임 중앙에 자동 맞춤 설정 */
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* Giúp vuốt mượt mà trên iOS */
+            -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 지원 */
         }
         
-        /* Ẩn thanh cuộn của trình duyệt */
+        /* 브라우저 스크롤바 숨기기 */
         .product-img-carousel::-webkit-scrollbar {
             display: none;
         }
@@ -71,12 +71,12 @@
         .product-img-carousel img {
             width: 100%;
             height: 100%;
-            flex: 0 0 100%; /* Mỗi ảnh chiếm trọn 100% chiều rộng */
+            flex: 0 0 100%; /* 각 이미지가 전체 너비의 100%를 차지하도록 설정 */
             scroll-snap-align: center;
             object-fit: cover;
         }
 
-        /* Hệ thống dấu chấm chỉ báo (Dots Indicator) */
+        /* 인디케이터 도트(점) 시스템 */
         .carousel-dots {
             display: flex;
             justify-content: center;
@@ -91,7 +91,7 @@
             transition: all 0.3s ease;
         }
         .dot.active {
-            background-color: #0071e3; /* Chấm màu xanh khi ảnh đang hiển thị */
+            background-color: #0071e3; /* 현재 표시 중인 이미지의 도트 색상(파란색) */
             width: 14px;
             border-radius: 3px;
         }
@@ -102,11 +102,11 @@
         .info-label { color: #1d1d1f; font-size: 15px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; }
         .info-value { color: #515154; font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
         
-        /* Size Chips */
+        /* 사이즈 칩 */
         .size-container { display: flex; gap: 8px; margin-bottom: 15px; }
         .size-chip { padding: 6px 14px; background-color: #f5f5f7; border-radius: 10px; font-size: 13px; font-weight: 600; color: #1d1d1f; border: 1px solid #e2e2e7; }
         
-        /* Care Icons Grid */
+        /* 케어 아이콘 그리드 */
         .care-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -187,7 +187,7 @@
     <div id="error-message">올바르지 않은 상품 태그 접근입니다.</div>
 
     <script>
-        // Ký hiệu giặt là chuẩn SVG vector
+        // 표준 세탁 기호 SVG 벡터
         const iconSVG = {
             dry_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><circle cx="50" cy="50" r="35"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
             bleach_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><polygon points="50,15 15,80 85,80"/><line x1="25" y1="30" x2="75" y2="80"/><line x1="75" y1="30" x2="25" y2="80"/></svg>`,
@@ -196,7 +196,7 @@
             iron_low: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M20,75 L80,75 C80,75 85,50 70,50 L40,50 C30,50 20,60 20,75 Z M35,50 L35,30 L65,30"/><circle cx="50" cy="63" r="3" fill="black"/></svg>`
         };
 
-        // 🌟 DATABASE CHỨA MẢNG LINK ẢNH THẬT TRỰC TUYẾN (Dùng được ngay lập tức)
+        // 🌟 실시간 온라인 이미지 링크 배열을 포함한 모의 데이터베이스 (즉시 사용 가능)
         const mockDatabase = {
             "SP001": { 
                 brand: "ADIDAS", 
@@ -205,9 +205,9 @@
                 sizes: ["M", "L", "XL"], 
                 material: "소재: 100% 코튼(Cotton) - 프리미엄 에코 원사", 
                 imgs: [
-                    "ao_mat_truoc.jpg",  // Ảnh 1 (Ảnh chính)
-            "ao_mat_sau.jpg",    // Ảnh 2 (Vuốt sang để xem)
-            "mac_ao_chi_tiet.jpg" // Ảnh 3 (Vuốt sang để xem)
+                    "ao_mat_truoc.jpg",   // 이미지 1 (메인 이미지)
+                    "ao_mat_sau.jpg",     // 이미지 2 (옆으로 밀어서 보기)
+                    "mac_ao_chi_tiet.jpg" // 이미지 3 (옆으로 밀어서 보기)
                 ],
                 careIcons: [
                     {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
@@ -224,8 +224,8 @@
                 sizes: ["30", "32", "34"], 
                 material: "소재: 프리미엄 인디고 데님 (친환경 공정)", 
                 imgs: [
-                    "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80", // Ảnh quần denim
-                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&q=80"  // Chi tiết đường may quần
+                    "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80", // 데님 팬츠 이미지
+                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&q=80"  // 바지 스티치 디테일
                 ],
                 careIcons: [
                     {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
@@ -242,8 +242,8 @@
                 sizes: ["S", "M", "L"], 
                 material: "소재: 천연 울 80%, 고기능성 나일론 20%", 
                 imgs: [
-                    "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?w=500&q=80", // Thớ len dệt cao cấp
-                    "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&q=80"  // Form áo ấm áp
+                    "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?w=500&q=80", // 고급 니트 짜임 디테일
+                    "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&q=80"  // 따뜻한 느낌의 핏감
                 ],
                 careIcons: [
                     {svg: iconSVG.dry_no, text: "드라이 전용"},
@@ -273,7 +273,7 @@
                 document.getElementById('res-price').innerText = data.price;
                 document.getElementById('res-material').innerText = data.material;
                 
-                // 🌟 LOGIC SINH CAROUSEL VÀ DOTS CHỈ BÁO ĐỘNG
+                // 🌟 캐러셀 및 동적 인디케이터 도트 생성 로직
                 const carouselContainer = document.getElementById('res-img-carousel');
                 const dotsContainer = document.getElementById('res-carousel-dots');
                 
@@ -281,19 +281,19 @@
                 dotsContainer.innerHTML = "";    
                 
                 data.imgs.forEach((imgUrl, index) => {
-                    // Thêm phần tử ảnh vào thanh cuộn ngang
+                    // 가로 스크롤바에 이미지 요소 추가
                     const imgTag = document.createElement('img');
                     imgTag.src = imgUrl;
-                    imgTag.alt = `${data.name} Image ${index + 1}`;
+                    imgTag.alt = `${data.name} 이미지 ${index + 1}`;
                     carouselContainer.appendChild(imgTag);
                     
-                    // Thêm dấu chấm tương ứng
+                    // 해당하는 인디케이터 도트 추가
                     const dotTag = document.createElement('span');
                     dotTag.className = index === 0 ? 'dot active' : 'dot';
                     dotsContainer.appendChild(dotTag);
                 });
 
-                // Lắng nghe sự kiện trượt để đổi màu dấu chấm
+                // 스크롤 이벤트를 감지하여 도트 색상 변경
                 carouselContainer.addEventListener('scroll', () => {
                     const width = carouselContainer.clientWidth;
                     const scrollLeft = carouselContainer.scrollLeft;
@@ -309,7 +309,7 @@
                     });
                 });
                 
-                // Render kích cỡ (Size)
+                // 사이즈(Size) 렌더링
                 const sizeContainer = document.getElementById('res-size');
                 sizeContainer.innerHTML = "";
                 data.sizes.forEach(size => {
@@ -319,7 +319,7 @@
                     sizeContainer.appendChild(chip);
                 });
 
-                // Render ký hiệu giặt là công nghệ SVG
+                // SVG 기술을 적용한 세탁 기호 렌더링
                 const careContainer = document.getElementById('res-care-icons');
                 careContainer.innerHTML = "";
                 data.careIcons.forEach(item => {
