@@ -3,337 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>아디다스 스마트 케어 라벨 (Adidas Smart Care Tag)</title>
+    <title>ADIDAS SMART CARE TAG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Pretendard', -apple-system, sans-serif; 
-            text-align: center; 
-            background-color: #f0f2f5; 
-            margin: 0; 
-            padding: 20px; 
-        }
-        #result-box { 
-            margin-top: 10px; 
-            padding: 25px; 
-            background: #ffffff; 
-            border-radius: 24px; 
-            text-align: left;
-            max-width: 380px; 
-            margin-left: auto; 
-            margin-right: auto;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-            display: none;
-        }
-        .tag-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .brand-logo {
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #1d1d1f;
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
         }
-        .brand-sub {
-            font-size: 10px;
-            color: #86868b;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
-        
-        /* 🌟 가로 이미지 슬라이더(캐러셀) 컨테이너 */
-        .product-img-slider-container {
-            width: 100%;
-            height: 280px;
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 12px;
+
+        body {
             background-color: #f5f5f7;
+            color: #1d1d1f;
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        /* Khung mô phỏng màn hình điện thoại di động */
+        .phone-container {
+            width: 100%;
+            max-width: 430px; /* Chuẩn iPhone Pro Max */
+            background-color: #ffffff;
+            min-height: 92vh;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
-        
-        .product-img-carousel {
+
+        /* Thanh Header cao cấp phía trên */
+        .header {
+            background-color: #ffffff;
+            padding: 25px 20px 15px 20px;
+            text-align: center;
+            border-bottom: 1px solid #e2e2e7;
+        }
+
+        .brand-logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .tag-sub {
+            font-size: 11px;
+            color: #86868b;
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Khu vực nội dung chính */
+        .content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Khung hiển thị hình ảnh sản phẩm */
+        .image-viewport {
+            width: 100%;
+            height: 380px;
+            background-color: #f5f5f7;
+            border-radius: 24px;
+            overflow: hidden;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .product-img {
             width: 100%;
             height: 100%;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory; /* 스와이프 시 이미지가 프레임 중앙에 자동 맞춤 설정 */
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 지원 */
-        }
-        
-        /* 브라우저 스크롤바 숨기기 */
-        .product-img-carousel::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .product-img-carousel img {
-            width: 100%;
-            height: 100%;
-            flex: 0 0 100%; /* 각 이미지가 전체 너비의 100%를 차지하도록 설정 */
-            scroll-snap-align: center;
             object-fit: cover;
         }
 
-        /* 인디케이터 도트(점) 시스템 */
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 20px;
-        }
-        .dot {
-            width: 6px;
-            height: 6px;
-            background-color: #d2d2d7;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-        .dot.active {
-            background-color: #0071e3; /* 현재 표시 중인 이미지의 도트 색상(파란색) */
-            width: 14px;
-            border-radius: 3px;
+        /* Thông tin chữ hiển thị */
+        .product-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.3;
         }
 
-        .item-title { font-size: 22px; font-weight: 800; color: #1d1d1f; text-align: center; margin-bottom: 6px; }
-        .item-price { color: #0071e3; font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; }
-        
-        .info-label { color: #1d1d1f; font-size: 15px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; }
-        .info-value { color: #515154; font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
-        
-        /* 사이즈 칩 */
-        .size-container { display: flex; gap: 8px; margin-bottom: 15px; }
-        .size-chip { padding: 6px 14px; background-color: #f5f5f7; border-radius: 10px; font-size: 13px; font-weight: 600; color: #1d1d1f; border: 1px solid #e2e2e7; }
-        
-        /* 케어 아이콘 그리드 */
-        .care-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
-            margin-top: 15px;
-            margin-bottom: 15px;
+        .product-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0071e3; /* Màu xanh Apple Premium */
             text-align: center;
-            width: 100%;
+            margin-bottom: 25px;
         }
+
+        /* Khu vực Size kích thước */
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1d1d1f;
+        }
+
+        .size-box-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .size-badge {
+            flex: 1;
+            height: 44px;
+            border: 1px solid #e2e2e7;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 14px;
+            background-color: #ffffff;
+            color: #1d1d1f;
+            transition: all 0.2s;
+        }
+
+        .size-badge.active {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border-color: #1d1d1f;
+        }
+
+        /* Mô tả chất liệu */
+        .info-card {
+            background-color: #f5f5f7;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 25px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #515154;
+            line-height: 1.5;
+        }
+
+        /* Khu vực Biểu tượng Giặt là Care Icons */
+        .care-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #e2e2e7;
+            border-radius: 20px;
+            padding: 20px 15px;
+            margin-top: 10px;
+        }
+
         .care-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            flex: 1;
         }
+
+        /* Vẽ biểu tượng giặt là dạng Vector để đảm bảo độ sắc nét trên mọi màn hình */
         .care-icon {
-            width: 36px;  
-            height: 36px;
+            width: 32px;
+            height: 32px;
             margin-bottom: 8px;
+            fill: none;
+            stroke: #1d1d1f;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
-        .care-text {
-            font-size: 9.5px;
-            color: #86868b;
-            font-weight: 500;
-            line-height: 1.3;
-            word-break: keep-all;
-            white-space: normal;
-        }
-        
-        .footer-notice {
-            font-size: 11px;
+
+        .care-label {
+            font-size: 10px;
             color: #86868b;
             text-align: center;
-            background-color: #f5f5f7;
-            padding: 10px;
-            border-radius: 10px;
-            margin-top: 20px;
-            line-height: 1.4;
+            white-space: nowrap;
         }
-        hr { border: 0; border-top: 1px solid #f2f2f7; margin: 15px 0; }
-        #error-message { color: #d9534f; font-weight: bold; margin-top: 50px; display: none; }
+
+        /* Thông báo khi không tìm thấy sản phẩm hoặc lỗi ID */
+        .error-state {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .error-state h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <h2 style="margin-bottom: 20px; font-size: 20px; color: #1d1d1f;">ADIDAS 모바일 제품 가이드</h2>
-    
-    <div id="result-box">
-        <div class="tag-header">
-            <h1 id="res-brand" class="brand-logo">ADIDAS</h1>
-            <div class="brand-sub">SMART CARE TAG</div>
+
+    <div class="phone-container">
+        <div class="header">
+            <div class="brand-logo">Adidas</div>
+            <div class="tag-sub">SMART CARE TAG</div>
         </div>
-        
-        <div class="product-img-slider-container">
-            <div id="res-img-carousel" class="product-img-carousel"></div>
-        </div>
-        
-        <div id="res-carousel-dots" class="carousel-dots"></div>
-        
-        <div id="res-name" class="item-title"></div>
-        <div id="res-price" class="item-price"></div>
-        <hr>
-        
-        <div class="info-label">선택 가능 사이즈</div>
-        <div id="res-size" class="size-container"></div>
-        <hr>
-        
-        <div class="info-label">소재 및 케어 정보</div>
-        <div id="res-material" class="info-value"></div>
-        
-        <div class="info-label">세탁 및 취급 주의사항</div>
-        <div id="res-care-icons" class="care-grid"></div>
-        
-        <div class="footer-notice">
-            정확한 케어를 위해 반드시 기호와 세탁 라벨을 확인하세요.
-        </div>
-    </div>
 
-    <div id="error-message">올바르지 않은 상품 태그 접근입니다.</div>
+        <div class="content" id="main-content">
+            <div class="image-viewport">
+                <img id="p-img" src="" alt="Product Image" class="product-img">
+            </div>
 
-    <script>
-        // 표준 세탁 기호 SVG 벡터
-        const iconSVG = {
-            dry_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><circle cx="50" cy="50" r="35"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
-            bleach_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><polygon points="50,15 15,80 85,80"/><line x1="25" y1="30" x2="75" y2="80"/><line x1="75" y1="30" x2="25" y2="80"/></svg>`,
-            wash_cold: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M15,40 C15,40 25,35 35,40 C45,45 55,40 55,40 C55,40 65,35 75,40 C85,45 90,40 90,40 L80,80 L20,80 Z"/><path d="M30,55 Q50,45 70,55" stroke-width="4"/></svg>`,
-            dry_no_machine: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><rect x="15" y="15" width="70" height="70" rx="10"/><circle cx="50" cy="50" r="22"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
-            iron_low: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M20,75 L80,75 C80,75 85,50 70,50 L40,50 C30,50 20,60 20,75 Z M35,50 L35,30 L65,30"/><circle cx="50" cy="63" r="3" fill="black"/></svg>`
-        };
+            <h1 class="product-title" id="p-name">Loading...</h1>
+            <div class="product-price" id="p-price">0 KRW</div>
 
-        // 🌟 실시간 온라인 이미지 링크 배열을 포함한 모의 데이터베이스 (즉시 사용 가능)
-        const mockDatabase = {
-            "SP001": { 
-                brand: "ADIDAS", 
-                name: "오버사이즈 코튼 티셔츠", 
-                price: "29,000 KRW", 
-                sizes: ["M", "L", "XL"], 
-                material: "소재: 100% 코튼(Cotton) - 프리미엄 에코 원사", 
-                imgs: [
-                    "ao_mat_truoc.jpg",   // 이미지 1 (메인 이미지)
-                    "ao_mat_sau.jpg",     // 이미지 2 (옆으로 밀어서 보기)
-                    "mac_ao_chi_tiet.jpg" // 이미지 3 (옆으로 밀어서 보기)
-                ],
-                careIcons: [
-                    {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
-                    {svg: iconSVG.bleach_no, text: "표백 금지"},
-                    {svg: iconSVG.wash_cold, text: "찬물 세탁<br>권장"},
-                    {svg: iconSVG.dry_no_machine, text: "저온 건조<br>금지"},
-                    {svg: iconSVG.iron_low, text: "저온 다림질<br>가능"}
-                ]
-            },
-            "SP002": { 
-                brand: "ADIDAS ORIGINALS", 
-                name: "슬림핏 데님 팬츠", 
-                price: "45,000 KRW", 
-                sizes: ["30", "32", "34"], 
-                material: "소재: 프리미엄 인디고 데님 (친환경 공정)", 
-                imgs: [
-                    "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80", // 데님 팬츠 이미지
-                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&q=80"  // 바지 스티치 디테일
-                ],
-                careIcons: [
-                    {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
-                    {svg: iconSVG.bleach_no, text: "표백 금지"},
-                    {svg: iconSVG.wash_cold, text: "단독 찬물<br>세탁"},
-                    {svg: iconSVG.dry_no_machine, text: "기계 건조<br>금지"},
-                    {svg: iconSVG.iron_low, text: "중온 다림질<br>가능"}
-                ]
-            },
-            "SP003": { 
-                brand: "ADIDAS PERFORMANCE", 
-                name: "울 혼방 가디건", 
-                price: "85,000 KRW", 
-                sizes: ["S", "M", "L"], 
-                material: "소재: 천연 울 80%, 고기능성 나일론 20%", 
-                imgs: [
-                    "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?w=500&q=80", // 고급 니트 짜임 디테일
-                    "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&q=80"  // 따뜻한 느낌의 핏감
-                ],
-                careIcons: [
-                    {svg: iconSVG.dry_no, text: "드라이 전용"},
-                    {svg: iconSVG.bleach_no, text: "표백 금지"},
-                    {svg: iconSVG.wash_cold, text: "손세탁 권장"},
-                    {svg: iconSVG.dry_no_machine, text: "건조기 금지"},
-                    {svg: iconSVG.iron_low, text: "다림질 천<br>사용"}
-                ]
-            }
-        };
+            <div class="section-title">선택 가능 사이즈 (Sizes)</div>
+            <div class="size-box-container" id="p-sizes">
+                </div>
 
-        function getProductIdFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id');
-        }
+            <div class="section-title">소재 및 케어 정보 (Material)</div>
+            <div class="info-card">
+                <p class="info-text" id="p-material">Loading...</p>
+            </div>
 
-        window.onload = function() {
-            const productId = getProductIdFromURL();
-            const data = mockDatabase[productId];
-            
-            if (data) {
-                document.getElementById('result-box').style.display = 'block';
-                document.getElementById('error-message').style.display = 'none';
-                
-                document.getElementById('res-brand').innerText = data.brand;
-                document.getElementById('res-name').innerText = data.name;
-                document.getElementById('res-price').innerText = data.price;
-                document.getElementById('res-material').innerText = data.material;
-                
-                // 🌟 캐러셀 및 동적 인디케이터 도트 생성 로직
-                const carouselContainer = document.getElementById('res-img-carousel');
-                const dotsContainer = document.getElementById('res-carousel-dots');
-                
-                carouselContainer.innerHTML = ""; 
-                dotsContainer.innerHTML = "";    
-                
-                data.imgs.forEach((imgUrl, index) => {
-                    // 가로 스크롤바에 이미지 요소 추가
-                    const imgTag = document.createElement('img');
-                    imgTag.src = imgUrl;
-                    imgTag.alt = `${data.name} 이미지 ${index + 1}`;
-                    carouselContainer.appendChild(imgTag);
-                    
-                    // 해당하는 인디케이터 도트 추가
-                    const dotTag = document.createElement('span');
-                    dotTag.className = index === 0 ? 'dot active' : 'dot';
-                    dotsContainer.appendChild(dotTag);
-                });
-
-                // 스크롤 이벤트를 감지하여 도트 색상 변경
-                carouselContainer.addEventListener('scroll', () => {
-                    const width = carouselContainer.clientWidth;
-                    const scrollLeft = carouselContainer.scrollLeft;
-                    const activeIndex = Math.round(scrollLeft / width);
-                    
-                    const dots = dotsContainer.querySelectorAll('.dot');
-                    dots.forEach((dot, idx) => {
-                        if (idx === activeIndex) {
-                            dot.classList.add('active');
-                        } else {
-                            dot.classList.remove('active');
-                        }
-                    });
-                });
-                
-                // 사이즈(Size) 렌더링
-                const sizeContainer = document.getElementById('res-size');
-                sizeContainer.innerHTML = "";
-                data.sizes.forEach(size => {
-                    const chip = document.createElement('span');
-                    chip.className = 'size-chip';
-                    chip.innerText = size;
-                    sizeContainer.appendChild(chip);
-                });
-
-                // SVG 기술을 적용한 세탁 기호 렌더링
-                const careContainer = document.getElementById('res-care-icons');
-                careContainer.innerHTML = "";
-                data.careIcons.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'care-item';
-                    itemDiv.innerHTML = item.svg + `<span class="care-text">${item.text}</span>`;
-                    careContainer.appendChild(itemDiv);
-                });
-                
-            } else {
-                document.getElementById('result-box').style.display = 'none';
-                document.getElementById('error-message').style.display = 'block';
-            }
-        };
-    </script>
-</body>
-</html>
+            <div class="section-title">세탁 및 취급 주의사항 (Care Instructions)</div>
+            <div class="care-grid">
+                <div class="care-item">
+                    <svg class="care-icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                    </svg>
+                    <div class="care-label">
