@@ -3,136 +3,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADIDAS SMART CARE TAG</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>아디다스 스마트 케어 라벨 (Adidas Smart Care Tag)</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #f5f5f7; color: #1d1d1f; display: flex; justify-content: center; align-items: start; min-height: 100vh; padding: 20px 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; }
-        .phone-container { width: 100%; max-width: 430px; background-color: #ffffff; min-height: 92vh; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
-        .header { background-color: #ffffff; padding: 25px 20px 15px 20px; text-align: center; border-bottom: 1px solid #e2e2e7; }
-        .brand-logo { font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
-        .tag-sub { font-size: 11px; color: #86868b; letter-spacing: 1.5px; margin-top: 4px; font-weight: 500; }
-        .content { padding: 20px; flex: 1; }
-        .image-viewport { width: 100%; height: 380px; background-color: #f5f5f7; border-radius: 24px; overflow: hidden; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; }
-        .product-img { width: 100%; height: 100%; object-fit: cover; }
-        .product-title { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 10px; line-height: 1.3; }
-        .product-price { font-size: 22px; font-weight: 700; color: #0071e3; text-align: center; margin-bottom: 25px; }
-        .section-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: #1d1d1f; }
-        .size-box-container { display: flex; gap: 10px; margin-bottom: 25px; }
-        .size-badge { flex: 1; height: 44px; border: 1px solid #e2e2e7; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-weight: 600; font-size: 14px; background-color: #ffffff; }
-        .size-badge.active { background-color: #1d1d1f; color: #ffffff; border-color: #1d1d1f; }
-        .info-card { background-color: #f5f5f7; border-radius: 16px; padding: 16px; margin-bottom: 25px; }
-        .info-text { font-size: 14px; color: #515154; line-height: 1.5; }
-        .care-grid { display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #e2e2e7; border-radius: 20px; padding: 20px 15px; margin-top: 10px; }
-        .care-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .care-icon { width: 32px; height: 32px; margin-bottom: 8px; fill: none; stroke: #1d1d1f; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .care-label { font-size: 10px; color: #86868b; text-align: center; white-space: nowrap; }
-        .error-state { display: none; text-align: center; padding: 40px 20px; }
+        body { 
+            font-family: 'Pretendard', -apple-system, sans-serif; 
+            text-align: center; 
+            background-color: #f0f2f5; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        #result-box { 
+            margin-top: 10px; 
+            padding: 25px; 
+            background: #ffffff; 
+            border-radius: 24px; 
+            text-align: left;
+            max-width: 380px; 
+            margin-left: auto; 
+            margin-right: auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            display: none;
+        }
+        .tag-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .brand-logo {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #1d1d1f;
+            margin: 0;
+        }
+        .brand-sub {
+            font-size: 10px;
+            color: #86868b;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        
+        /* 🌟 KHUNG CHỨA CAROUSEL TRƯỢT ẢNH NGANG */
+        .product-img-slider-container {
+            width: 100%;
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            background-color: #f5f5f7;
+            position: relative;
+        }
+        
+        .product-img-carousel {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory; /* Tự động hít ảnh vào giữa khung khi vuốt */
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* Giúp vuốt mượt mà trên iOS */
+        }
+        
+        /* Ẩn thanh cuộn của trình duyệt */
+        .product-img-carousel::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .product-img-carousel img {
+            width: 100%;
+            height: 100%;
+            flex: 0 0 100%; /* Mỗi ảnh chiếm trọn 100% chiều rộng */
+            scroll-snap-align: center;
+            object-fit: cover;
+        }
+
+        /* Hệ thống dấu chấm chỉ báo (Dots Indicator) */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: #d2d2d7;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            background-color: #0071e3; /* Chấm màu xanh khi ảnh đang hiển thị */
+            width: 14px;
+            border-radius: 3px;
+        }
+
+        .item-title { font-size: 22px; font-weight: 800; color: #1d1d1f; text-align: center; margin-bottom: 6px; }
+        .item-price { color: #0071e3; font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; }
+        
+        .info-label { color: #1d1d1f; font-size: 15px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; }
+        .info-value { color: #515154; font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
+        
+        /* Size Chips */
+        .size-container { display: flex; gap: 8px; margin-bottom: 15px; }
+        .size-chip { padding: 6px 14px; background-color: #f5f5f7; border-radius: 10px; font-size: 13px; font-weight: 600; color: #1d1d1f; border: 1px solid #e2e2e7; }
+        
+        /* Care Icons Grid */
+        .care-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+        }
+        .care-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .care-icon {
+            width: 36px;  
+            height: 36px;
+            margin-bottom: 8px;
+        }
+        .care-text {
+            font-size: 9.5px;
+            color: #86868b;
+            font-weight: 500;
+            line-height: 1.3;
+            word-break: keep-all;
+            white-space: normal;
+        }
+        
+        .footer-notice {
+            font-size: 11px;
+            color: #86868b;
+            text-align: center;
+            background-color: #f5f5f7;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+        hr { border: 0; border-top: 1px solid #f2f2f7; margin: 15px 0; }
+        #error-message { color: #d9534f; font-weight: bold; margin-top: 50px; display: none; }
     </style>
 </head>
 <body>
-
-    <div class="phone-container">
-        <div class="header">
-            <div class="brand-logo">Adidas</div>
-            <div class="tag-sub">SMART CARE TAG</div>
+    <h2 style="margin-bottom: 20px; font-size: 20px; color: #1d1d1f;">ADIDAS 모바일 제품 가이드</h2>
+    
+    <div id="result-box">
+        <div class="tag-header">
+            <h1 id="res-brand" class="brand-logo">ADIDAS</h1>
+            <div class="brand-sub">SMART CARE TAG</div>
         </div>
-
-        <div class="content" id="main-content">
-            <div class="image-viewport">
-                <img id="p-img" src="" alt="Product Image" class="product-img">
-            </div>
-            <h1 class="product-title" id="p-name">Loading...</h1>
-            <div class="product-price" id="p-price">0 KRW</div>
-
-            <div class="section-title">선택 가능 사이즈 (Sizes)</div>
-            <div class="size-box-container" id="p-sizes"></div>
-
-            <div class="section-title">소재 및 케어 정보 (Material)</div>
-            <div class="info-card">
-                <p class="info-text" id="p-material">Loading...</p>
-            </div>
-
-            <div class="section-title">세탁 및 취급 주의사항 (Care Instructions)</div>
-            <div class="care-grid">
-                <div class="care-item">
-                    <svg class="care-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                    <div class="care-label">드라이클리닝<br>금지</div>
-                </div>
-                <div class="care-item">
-                    <svg class="care-icon" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
-                    <div class="care-label">표백 금지</div>
-                </div>
-                <div class="care-item">
-                    <svg class="care-icon" viewBox="0 0 24 24"><path d="M4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8-8-3.6-8-8z"/><path d="M12 8v8M8 12h8"/></svg>
-                    <div class="care-label">찬물 세탁<br>권장</div>
-                </div>
-                <div class="care-item">
-                    <svg class="care-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="6"/></svg>
-                    <div class="care-label">저온 건조<br>금지</div>
-                </div>
-                <div class="care-item">
-                    <svg class="care-icon" viewBox="0 0 24 24"><path d="M4 18h16M4 14h13a3 3 0 0 0 3-3V7a1 1 0 0 0-1-1H7a4 4 0 0 0-4 4v4"/></svg>
-                    <div class="care-label">저온 다림질<br>가능</div>
-                </div>
-            </div>
+        
+        <div class="product-img-slider-container">
+            <div id="res-img-carousel" class="product-img-carousel"></div>
         </div>
-
-        <div class="content error-state" id="error-content">
-            <h2 style="color: #ff3b30;">❌ 상품 정보를 찾을 수 없습니다.</h2>
-            <p style="color: #86868b; font-size: 14px; margin-top: 10px;">Mã QR không hợp lệ hoặc sản phẩm không tồn tại.</p>
+        
+        <div id="res-carousel-dots" class="carousel-dots"></div>
+        
+        <div id="res-name" class="item-title"></div>
+        <div id="res-price" class="item-price"></div>
+        <hr>
+        
+        <div class="info-label">선택 가능 사이즈</div>
+        <div id="res-size" class="size-container"></div>
+        <hr>
+        
+        <div class="info-label">소재 및 케어 정보</div>
+        <div id="res-material" class="info-value"></div>
+        
+        <div class="info-label">세탁 및 취급 주의사항</div>
+        <div id="res-care-icons" class="care-grid"></div>
+        
+        <div class="footer-notice">
+            정확한 케어를 위해 반드시 기호와 세탁 라벨을 확인하세요.
         </div>
     </div>
 
+    <div id="error-message">올바르지 않은 상품 태그 접근입니다.</div>
+
     <script>
-        // CƠ SỞ DỮ LIỆU ĐỒNG BỘ HIỂN THỊ TRÊN WEB DI ĐỘNG
-        const productDatabase = {
-            "SP001": {
-                name: "오버사이즈 코튼 티셔츠",
-                price: "29,000 KRW",
-                sizes: ["M", "L", "XL"],
-                material: "소재: 100% 코튼(Cotton) - 프리미엄 에코 원사",
-                img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=600"
+        // Ký hiệu giặt là chuẩn SVG vector
+        const iconSVG = {
+            dry_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><circle cx="50" cy="50" r="35"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
+            bleach_no: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><polygon points="50,15 15,80 85,80"/><line x1="25" y1="30" x2="75" y2="80"/><line x1="75" y1="30" x2="25" y2="80"/></svg>`,
+            wash_cold: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M15,40 C15,40 25,35 35,40 C45,45 55,40 55,40 C55,40 65,35 75,40 C85,45 90,40 90,40 L80,80 L20,80 Z"/><path d="M30,55 Q50,45 70,55" stroke-width="4"/></svg>`,
+            dry_no_machine: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><rect x="15" y="15" width="70" height="70" rx="10"/><circle cx="50" cy="50" r="22"/><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg>`,
+            iron_low: `<svg class="care-icon" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="6"><path d="M20,75 L80,75 C80,75 85,50 70,50 L40,50 C30,50 20,60 20,75 Z M35,50 L35,30 L65,30"/><circle cx="50" cy="63" r="3" fill="black"/></svg>`
+        };
+
+        // 🌟 DATABASE CHỨA MẢNG LINK ẢNH THẬT TRỰC TUYẾN (Dùng được ngay lập tức)
+        const mockDatabase = {
+            "SP001": { 
+                brand: "ADIDAS", 
+                name: "오버사이즈 코튼 티셔츠", 
+                price: "29,000 KRW", 
+                sizes: ["M", "L", "XL"], 
+                material: "소재: 100% 코튼(Cotton) - 프리미엄 에코 원사", 
+                imgs: [
+                    "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80", // Mặt trước áo thun đen
+                    "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500&q=80", // Form áo mặc lên người
+                    "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=500&q=80"  // Cận cảnh gấp xếp vải
+                ],
+                careIcons: [
+                    {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
+                    {svg: iconSVG.bleach_no, text: "표백 금지"},
+                    {svg: iconSVG.wash_cold, text: "찬물 세탁<br>권장"},
+                    {svg: iconSVG.dry_no_machine, text: "저온 건조<br>금지"},
+                    {svg: iconSVG.iron_low, text: "저온 다림질<br>가능"}
+                ]
             },
-            "SP002": {
-                name: "슬림핏 청바지",
-                price: "45,000 KRW",
-                sizes: ["30", "32", "34"],
-                material: "소재: 98% 데님 코튼, 2% 스판덱스 (고탄력 데님)",
-                img: "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&q=80&w=600"
+            "SP002": { 
+                brand: "ADIDAS ORIGINALS", 
+                name: "슬림핏 데님 팬츠", 
+                price: "45,000 KRW", 
+                sizes: ["30", "32", "34"], 
+                material: "소재: 프리미엄 인디고 데님 (친환경 공정)", 
+                imgs: [
+                    "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80", // Ảnh quần denim
+                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&q=80"  // Chi tiết đường may quần
+                ],
+                careIcons: [
+                    {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
+                    {svg: iconSVG.bleach_no, text: "표백 금지"},
+                    {svg: iconSVG.wash_cold, text: "단독 찬물<br>세탁"},
+                    {svg: iconSVG.dry_no_machine, text: "기계 건조<br>금지"},
+                    {svg: iconSVG.iron_low, text: "중온 다림질<br>가능"}
+                ]
+            },
+            "SP003": { 
+                brand: "ADIDAS PERFORMANCE", 
+                name: "울 혼방 가디건", 
+                price: "85,000 KRW", 
+                sizes: ["S", "M", "L"], 
+                material: "소재: 천연 울 80%, 고기능성 나일론 20%", 
+                imgs: [
+                    "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?w=500&q=80", // Thớ len dệt cao cấp
+                    "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&q=80"  // Form áo ấm áp
+                ],
+                careIcons: [
+                    {svg: iconSVG.dry_no, text: "드라이 전용"},
+                    {svg: iconSVG.bleach_no, text: "표백 금지"},
+                    {svg: iconSVG.wash_cold, text: "손세탁 권장"},
+                    {svg: iconSVG.dry_no_machine, text: "건조기 금지"},
+                    {svg: iconSVG.iron_low, text: "다림질 천<br>사용"}
+                ]
             }
         };
 
-        function renderProductInfo() {
-            const params = new URLSearchParams(window.location.search);
-            const productId = params.get('id');
-            const mainContent = document.getElementById('main-content');
-            const errorContent = document.getElementById('error-content');
+        function getProductIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
 
-            if (productId && productDatabase[productId]) {
-                const product = productDatabase[productId];
-                document.getElementById('p-name').innerText = product.name;
-                document.getElementById('p-price').innerText = product.price;
-                document.getElementById('p-material').innerText = product.material;
-                document.getElementById('p-img').src = product.img;
-
-                const sizeContainer = document.getElementById('p-sizes');
-                sizeContainer.innerHTML = '';
-                product.sizes.forEach((size, index) => {
-                    const badge = document.createElement('div');
-                    badge.className = `size-badge ${index === 0 ? 'active' : ''}`;
-                    badge.innerText = size;
-                    sizeContainer.appendChild(badge);
+        window.onload = function() {
+            const productId = getProductIdFromURL();
+            const data = mockDatabase[productId];
+            
+            if (data) {
+                document.getElementById('result-box').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                
+                document.getElementById('res-brand').innerText = data.brand;
+                document.getElementById('res-name').innerText = data.name;
+                document.getElementById('res-price').innerText = data.price;
+                document.getElementById('res-material').innerText = data.material;
+                
+                // 🌟 LOGIC SINH CAROUSEL VÀ DOTS CHỈ BÁO ĐỘNG
+                const carouselContainer = document.getElementById('res-img-carousel');
+                const dotsContainer = document.getElementById('res-carousel-dots');
+                
+                carouselContainer.innerHTML = ""; 
+                dotsContainer.innerHTML = "";    
+                
+                data.imgs.forEach((imgUrl, index) => {
+                    // Thêm phần tử ảnh vào thanh cuộn ngang
+                    const imgTag = document.createElement('img');
+                    imgTag.src = imgUrl;
+                    imgTag.alt = `${data.name} Image ${index + 1}`;
+                    carouselContainer.appendChild(imgTag);
+                    
+                    // Thêm dấu chấm tương ứng
+                    const dotTag = document.createElement('span');
+                    dotTag.className = index === 0 ? 'dot active' : 'dot';
+                    dotsContainer.appendChild(dotTag);
                 });
 
-                mainContent.style.display = 'block';
-                errorContent.style.display = 'none';
+                // Lắng nghe sự kiện trượt để đổi màu dấu chấm
+                carouselContainer.addEventListener('scroll', () => {
+                    const width = carouselContainer.clientWidth;
+                    const scrollLeft = carouselContainer.scrollLeft;
+                    const activeIndex = Math.round(scrollLeft / width);
+                    
+                    const dots = dotsContainer.querySelectorAll('.dot');
+                    dots.forEach((dot, idx) => {
+                        if (idx === activeIndex) {
+                            dot.classList.add('active');
+                        } else {
+                            dot.classList.remove('active');
+                        }
+                    });
+                });
+                
+                // Render kích cỡ (Size)
+                const sizeContainer = document.getElementById('res-size');
+                sizeContainer.innerHTML = "";
+                data.sizes.forEach(size => {
+                    const chip = document.createElement('span');
+                    chip.className = 'size-chip';
+                    chip.innerText = size;
+                    sizeContainer.appendChild(chip);
+                });
+
+                // Render ký hiệu giặt là công nghệ SVG
+                const careContainer = document.getElementById('res-care-icons');
+                careContainer.innerHTML = "";
+                data.careIcons.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'care-item';
+                    itemDiv.innerHTML = item.svg + `<span class="care-text">${item.text}</span>`;
+                    careContainer.appendChild(itemDiv);
+                });
+                
             } else {
-                mainContent.style.display = 'none';
-                errorContent.style.display = 'block';
+                document.getElementById('result-box').style.display = 'none';
+                document.getElementById('error-message').style.display = 'block';
             }
-        }
-        window.onload = renderProductInfo;
+        };
     </script>
 </body>
 </html>
