@@ -197,27 +197,19 @@
         };
 
         // 🌟 DATABASE CHỨA MẢNG LINK ẢNH THẬT TRỰC TUYẾN (Dùng được ngay lập tức)
-   const mockDatabase = {
-    "SP001": { 
-        brand: "ADIDAS", 
-        name: "오버사이즈 코튼 티셔츠", 
-        price: "29,000 KRW", 
-        sizes: ["M", "L", "XL"], 
-        material: "소재: 100% 코튼(Cotton) - 프리미엄 에코 원사", 
-        
-        // 🌟 Xóa link cũ và điền chính xác tên các file ảnh của bạn vào đây:
+        const mockDatabase = {
+            "SP001": { 
+                brand: "ADIDAS", 
+                name: "오버사이즈 코튼 티셔츠", 
+                price: "29,000 KRW", 
+                sizes: ["M", "L", "XL"], 
+                material: "소재: 100% 코튼(Cotton) - 프리미엄 에코 원사", 
+              // 🌟 Xóa link cũ và điền chính xác tên các file ảnh của bạn vào đây:
         imgs: [
             "ao_mat_truoc.jpg",  // Ảnh 1 (Ảnh chính)
             "ao_mat_sau.jpg",    // Ảnh 2 (Vuốt sang để xem)
             "mac_ao_chi_tiet.jpg" // Ảnh 3 (Vuốt sang để xem)
-        ],
-        
-        careIcons: [ ... ]
-    },
-    "SP002": {
-        // Làm tương tự cho sản phẩm SP002 nếu có ảnh riêng
-    }
-};
+                ],
                 careIcons: [
                     {svg: iconSVG.dry_no, text: "드라이클리닝<br>금지"},
                     {svg: iconSVG.bleach_no, text: "표백 금지"},
